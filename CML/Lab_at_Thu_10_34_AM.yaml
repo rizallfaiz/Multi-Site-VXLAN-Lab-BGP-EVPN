@@ -1,0 +1,2954 @@
+annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: DCWSP01
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -840
+    y: -240
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: DCWSP02
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -280
+    y: -240
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: DCESP01
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 1320
+    y: -240
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: DCESP02
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 1880
+    y: -240
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: DCELF12
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 2040
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: DCWBRLF101
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -440
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: DCWLF12
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -680
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n7
+    image_definition: null
+    label: DCWBRLF102
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -120
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n8
+    image_definition: null
+    label: DCELF11
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 1720
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n9
+    image_definition: null
+    label: DCWLF11
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: -1000
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname inserthostname-here
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n10
+    image_definition: null
+    label: DCEWR02
+    node_definition: csr1000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1480
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname inserthostname-here
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n11
+    image_definition: null
+    label: DCEWR01
+    node_definition: csr1000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1160
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname inserthostname-here
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n12
+    image_definition: null
+    label: DCWWR01
+    node_definition: csr1000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -440
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname inserthostname-here
+          end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n13
+    image_definition: null
+    label: DCWWR02
+    node_definition: csr1000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -120
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n14
+    image_definition: null
+    label: DCEBRLF101
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 1160
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: nxos_config.txt
+        content: |-
+          hostname inserthostname-here
+          # workaround for booting to loader> prompt
+          echo 'from cli import cli' > set_boot.py
+          echo 'import json' >> set_boot.py
+          echo 'import os' >> set_boot.py
+          echo 'import time' >> set_boot.py
+          echo 'bootimage = json.loads(cli("show version | json"))["nxos_file_name"]' >> set_boot.py
+          echo 'set_boot = cli("conf t ; boot nxos {} ; no event manager applet BOOTCONFIG".format(bootimage))' >> set_boot.py
+          echo 'i = 0' >> set_boot.py
+          echo 'while i < 10:' >> set_boot.py
+          echo '    try:' >> set_boot.py
+          echo '        save_config = cli("copy running-config startup-config")' >> set_boot.py
+          echo '        break' >> set_boot.py
+          echo '    except Exception:' >> set_boot.py
+          echo '        i += 1' >> set_boot.py
+          echo '        time.sleep(1)' >> set_boot.py
+          echo 'os.remove("/bootflash/set_boot.py")' >> set_boot.py
+          event manager applet BOOTCONFIG
+           event syslog pattern "Configured from vty"
+           action 1.0 cli python bootflash:set_boot.py
+          # minimum needed config to login
+          no password strength-check
+          username admin role network-admin
+          username admin password cisco role network-admin
+          username cisco role network-admin
+          username cisco password cisco role network-admin
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n15
+    image_definition: null
+    label: DCEBRLF102
+    node_definition: nxosv9000
+    parameters: {}
+    ram: 7168
+    tags: []
+    x: 1480
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: mgmt0
+        slot: 0
+        type: physical
+      - id: i2
+        label: Ethernet1/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: Ethernet1/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: Ethernet1/3
+        slot: 3
+        type: physical
+      - id: i5
+        label: Ethernet1/4
+        slot: 4
+        type: physical
+      - id: i6
+        label: Ethernet1/5
+        slot: 5
+        type: physical
+      - id: i7
+        label: Ethernet1/6
+        slot: 6
+        type: physical
+      - id: i8
+        label: Ethernet1/7
+        slot: 7
+        type: physical
+      - id: i9
+        label: Ethernet1/8
+        slot: 8
+        type: physical
+      - id: i10
+        label: Ethernet1/9
+        slot: 9
+        type: physical
+      - id: i11
+        label: Ethernet1/10
+        slot: 10
+        type: physical
+      - id: i12
+        label: Ethernet1/11
+        slot: 11
+        type: physical
+      - id: i13
+        label: Ethernet1/12
+        slot: 12
+        type: physical
+      - id: i14
+        label: Ethernet1/13
+        slot: 13
+        type: physical
+      - id: i15
+        label: Ethernet1/14
+        slot: 14
+        type: physical
+      - id: i16
+        label: Ethernet1/15
+        slot: 15
+        type: physical
+      - id: i17
+        label: Ethernet1/16
+        slot: 16
+        type: physical
+      - id: i18
+        label: Ethernet1/17
+        slot: 17
+        type: physical
+      - id: i19
+        label: Ethernet1/18
+        slot: 18
+        type: physical
+      - id: i20
+        label: Ethernet1/19
+        slot: 19
+        type: physical
+      - id: i21
+        label: Ethernet1/20
+        slot: 20
+        type: physical
+      - id: i22
+        label: Ethernet1/21
+        slot: 21
+        type: physical
+      - id: i23
+        label: Ethernet1/22
+        slot: 22
+        type: physical
+      - id: i24
+        label: Ethernet1/23
+        slot: 23
+        type: physical
+      - id: i25
+        label: Ethernet1/24
+        slot: 24
+        type: physical
+      - id: i26
+        label: Ethernet1/25
+        slot: 25
+        type: physical
+      - id: i27
+        label: Ethernet1/26
+        slot: 26
+        type: physical
+      - id: i28
+        label: Ethernet1/27
+        slot: 27
+        type: physical
+      - id: i29
+        label: Ethernet1/28
+        slot: 28
+        type: physical
+      - id: i30
+        label: Ethernet1/29
+        slot: 29
+        type: physical
+      - id: i31
+        label: Ethernet1/30
+        slot: 30
+        type: physical
+      - id: i32
+        label: Ethernet1/31
+        slot: 31
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n16
+    image_definition: bigip-17.5.0-0.0.15
+    label: DCELTM01
+    node_definition: f5-bigip-ve
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1720
+    y: 440
+    interfaces:
+      - id: i0
+        label: eth0
+        slot: 0
+        type: physical
+      - id: i1
+        label: eth1
+        slot: 1
+        type: physical
+      - id: i2
+        label: eth2
+        slot: 2
+        type: physical
+      - id: i3
+        label: eth3
+        slot: 3
+        type: physical
+      - id: i4
+        label: eth4
+        slot: 4
+        type: physical
+      - id: i5
+        label: eth5
+        slot: 5
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: user_data
+        content: |-
+          #cloud-config
+
+          write_files:
+            - path: /config/onboarding/day0.sh
+               permissions: 0755
+               owner: root:root
+               content: |
+                 #!/bin/sh
+                 tmsh modify sys global-settings hostname mybigip.example.com
+
+          runcmd: [nohup sh -c '/config/onboarding/day0.sh' &]
+      - name: meta_data.json
+        content: '{ "uuid": "1d9d6d3a-1d36-4db7-8d7c-63963d4d6f20", "hostname": "localhost"
+          }'
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n17
+    image_definition: bigip-17.5.0-0.0.15
+    label: DCELTM02
+    node_definition: f5-bigip-ve
+    parameters: {}
+    ram: null
+    tags: []
+    x: 2040
+    y: 440
+    interfaces:
+      - id: i0
+        label: eth0
+        slot: 0
+        type: physical
+      - id: i1
+        label: eth1
+        slot: 1
+        type: physical
+      - id: i2
+        label: eth2
+        slot: 2
+        type: physical
+      - id: i3
+        label: eth3
+        slot: 3
+        type: physical
+      - id: i4
+        label: eth4
+        slot: 4
+        type: physical
+      - id: i5
+        label: eth5
+        slot: 5
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: user_data
+        content: |-
+          #cloud-config
+
+          write_files:
+            - path: /config/onboarding/day0.sh
+               permissions: 0755
+               owner: root:root
+               content: |
+                 #!/bin/sh
+                 tmsh modify sys global-settings hostname mybigip.example.com
+
+          runcmd: [nohup sh -c '/config/onboarding/day0.sh' &]
+      - name: meta_data.json
+        content: '{ "uuid": "1d9d6d3a-1d36-4db7-8d7c-63963d4d6f20", "hostname": "localhost"
+          }'
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n18
+    image_definition: null
+    label: DCWLTM02
+    node_definition: f5-bigip-ve
+    parameters: {}
+    ram: null
+    tags: []
+    x: -680
+    y: 440
+    interfaces:
+      - id: i0
+        label: eth0
+        slot: 0
+        type: physical
+      - id: i1
+        label: eth1
+        slot: 1
+        type: physical
+      - id: i2
+        label: eth2
+        slot: 2
+        type: physical
+      - id: i3
+        label: eth3
+        slot: 3
+        type: physical
+      - id: i4
+        label: eth4
+        slot: 4
+        type: physical
+      - id: i5
+        label: eth5
+        slot: 5
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: user_data
+        content: |-
+          #cloud-config
+
+          write_files:
+            - path: /config/onboarding/day0.sh
+               permissions: 0755
+               owner: root:root
+               content: |
+                 #!/bin/sh
+                 tmsh modify sys global-settings hostname mybigip.example.com
+
+          runcmd: [nohup sh -c '/config/onboarding/day0.sh' &]
+      - name: meta_data.json
+        content: '{ "uuid": "1d9d6d3a-1d36-4db7-8d7c-63963d4d6f20", "hostname": "localhost"
+          }'
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n19
+    image_definition: null
+    label: DCWLTM01
+    node_definition: f5-bigip-ve
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1000
+    y: 440
+    interfaces:
+      - id: i0
+        label: eth0
+        slot: 0
+        type: physical
+      - id: i1
+        label: eth1
+        slot: 1
+        type: physical
+      - id: i2
+        label: eth2
+        slot: 2
+        type: physical
+      - id: i3
+        label: eth3
+        slot: 3
+        type: physical
+      - id: i4
+        label: eth4
+        slot: 4
+        type: physical
+      - id: i5
+        label: eth5
+        slot: 5
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n20
+    image_definition: null
+    label: DCWTOR01
+    node_definition: iosvl2
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1000
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet0/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet0/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet0/3
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: hostname inserthostname-here
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n21
+    image_definition: null
+    label: DCWTOR02
+    node_definition: iosvl2
+    parameters: {}
+    ram: null
+    tags: []
+    x: -680
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet0/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet0/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet0/3
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: hostname inserthostname-here
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n22
+    image_definition: null
+    label: DCETOR01
+    node_definition: iosvl2
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1720
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet0/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet0/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet0/3
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: ios_config.txt
+        content: hostname inserthostname-here
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n23
+    image_definition: null
+    label: DCETOR02
+    node_definition: iosvl2
+    parameters: {}
+    ram: null
+    tags: []
+    x: 2040
+    y: 760
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet0/0
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet0/1
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet0/2
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet0/3
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n24
+    image_definition: null
+    label: DCWFW01
+    node_definition: panos10
+    parameters: {}
+    ram: null
+    tags: []
+    x: -440
+    y: 440
+    interfaces:
+      - id: i0
+        label: mgmt
+        slot: 0
+        type: physical
+      - id: i1
+        label: ethernet1/1
+        slot: 1
+        type: physical
+      - id: i2
+        label: ethernet1/2
+        slot: 2
+        type: physical
+      - id: i3
+        label: ethernet1/3
+        slot: 3
+        type: physical
+      - id: i4
+        label: ethernet1/4
+        slot: 4
+        type: physical
+      - id: i5
+        label: ethernet1/5
+        slot: 5
+        type: physical
+      - id: i6
+        label: ethernet1/6
+        slot: 6
+        type: physical
+      - id: i7
+        label: ethernet1/7
+        slot: 7
+        type: physical
+      - id: i8
+        label: ethernet1/8
+        slot: 8
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n25
+    image_definition: null
+    label: DCWFW02
+    node_definition: panos10
+    parameters: {}
+    ram: null
+    tags: []
+    x: -120
+    y: 440
+    interfaces:
+      - id: i0
+        label: mgmt
+        slot: 0
+        type: physical
+      - id: i1
+        label: ethernet1/1
+        slot: 1
+        type: physical
+      - id: i2
+        label: ethernet1/2
+        slot: 2
+        type: physical
+      - id: i3
+        label: ethernet1/3
+        slot: 3
+        type: physical
+      - id: i4
+        label: ethernet1/4
+        slot: 4
+        type: physical
+      - id: i5
+        label: ethernet1/5
+        slot: 5
+        type: physical
+      - id: i6
+        label: ethernet1/6
+        slot: 6
+        type: physical
+      - id: i7
+        label: ethernet1/7
+        slot: 7
+        type: physical
+      - id: i8
+        label: ethernet1/8
+        slot: 8
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n26
+    image_definition: null
+    label: DCEFW01
+    node_definition: panos10
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1160
+    y: 440
+    interfaces:
+      - id: i0
+        label: mgmt
+        slot: 0
+        type: physical
+      - id: i1
+        label: ethernet1/1
+        slot: 1
+        type: physical
+      - id: i2
+        label: ethernet1/2
+        slot: 2
+        type: physical
+      - id: i3
+        label: ethernet1/3
+        slot: 3
+        type: physical
+      - id: i4
+        label: ethernet1/4
+        slot: 4
+        type: physical
+      - id: i5
+        label: ethernet1/5
+        slot: 5
+        type: physical
+      - id: i6
+        label: ethernet1/6
+        slot: 6
+        type: physical
+      - id: i7
+        label: ethernet1/7
+        slot: 7
+        type: physical
+      - id: i8
+        label: ethernet1/8
+        slot: 8
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n27
+    image_definition: null
+    label: DCEFW02
+    node_definition: panos10
+    parameters: {}
+    ram: null
+    tags: []
+    x: 1480
+    y: 440
+    interfaces:
+      - id: i0
+        label: mgmt
+        slot: 0
+        type: physical
+      - id: i1
+        label: ethernet1/1
+        slot: 1
+        type: physical
+      - id: i2
+        label: ethernet1/2
+        slot: 2
+        type: physical
+      - id: i3
+        label: ethernet1/3
+        slot: 3
+        type: physical
+      - id: i4
+        label: ethernet1/4
+        slot: 4
+        type: physical
+      - id: i5
+        label: ethernet1/5
+        slot: 5
+        type: physical
+      - id: i6
+        label: ethernet1/6
+        slot: 6
+        type: physical
+      - id: i7
+        label: ethernet1/7
+        slot: 7
+        type: physical
+      - id: i8
+        label: ethernet1/8
+        slot: 8
+        type: physical
+links:
+  - id: l0
+    n1: n0
+    n2: n9
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCWSP11-Ethernet1/1<->USDCWLF101-Ethernet1/1
+  - id: l1
+    n1: n0
+    n2: n6
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: DCWSP11-Ethernet1/2<->USDCWLF102-Ethernet1/2
+  - id: l2
+    n1: n0
+    n2: n5
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: DCWSP11-Ethernet1/3<->USDCWLF103-Ethernet1/3
+  - id: l3
+    n1: n0
+    n2: n7
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCWSP11-Ethernet1/4<->USDCWLF104-Ethernet1/4
+  - id: l4
+    n1: n1
+    n2: n6
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCWSP12-Ethernet1/1<->USDCWLF102-Ethernet1/1
+  - id: l5
+    n1: n1
+    n2: n9
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: DCWSP12-Ethernet1/2<->USDCWLF101-Ethernet1/2
+  - id: l6
+    n1: n1
+    n2: n5
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCWSP12-Ethernet1/4<->USDCWLF103-Ethernet1/4
+  - id: l7
+    n1: n1
+    n2: n7
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: DCWSP12-Ethernet1/3<->USDCWLF104-Ethernet1/3
+  - id: l8
+    n1: n5
+    n2: n7
+    i1: i30
+    i2: i30
+    conditioning: {}
+    label: USDCWLF103-Ethernet1/29<->USDCWLF104-Ethernet1/29
+  - id: l9
+    n1: n5
+    n2: n7
+    i1: i31
+    i2: i31
+    conditioning: {}
+    label: USDCWLF103-Ethernet1/30<->USDCWLF104-Ethernet1/30
+  - id: l10
+    n1: n5
+    n2: n7
+    i1: i32
+    i2: i32
+    conditioning: {}
+    label: USDCWLF103-Ethernet1/31<->USDCWLF104-Ethernet1/31
+  - id: l11
+    n1: n9
+    n2: n6
+    i1: i30
+    i2: i30
+    conditioning: {}
+    label: USDCWLF101-Ethernet1/29<->USDCWLF102-Ethernet1/29
+  - id: l12
+    n1: n9
+    n2: n6
+    i1: i31
+    i2: i31
+    conditioning: {}
+    label: USDCWLF101-Ethernet1/30<->USDCWLF102-Ethernet1/30
+  - id: l13
+    n1: n9
+    n2: n6
+    i1: i32
+    i2: i32
+    conditioning: {}
+    label: USDCWLF101-Ethernet1/31<->USDCWLF102-Ethernet1/31
+  - id: l14
+    n1: n2
+    n2: n14
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: DCESP01-Ethernet1/3<->DCEBRLF101-Ethernet1/3
+  - id: l15
+    n1: n3
+    n2: n14
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCESP02-Ethernet1/4<->DCEBRLF101-Ethernet1/4
+  - id: l16
+    n1: n2
+    n2: n15
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCESP01-Ethernet1/4<->DCEBRLF102-Ethernet1/4
+  - id: l17
+    n1: n3
+    n2: n15
+    i1: i4
+    i2: i4
+    conditioning: {}
+    label: DCESP02-Ethernet1/3<->DCEBRLF102-Ethernet1/3
+  - id: l18
+    n1: n2
+    n2: n8
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: DCESP01-Ethernet1/2<->DCELF11-Ethernet1/2
+  - id: l19
+    n1: n3
+    n2: n8
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCESP02-Ethernet1/1<->DCELF11-Ethernet1/1
+  - id: l20
+    n1: n2
+    n2: n4
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCESP01-Ethernet1/1<->DCELF12-Ethernet1/1
+  - id: l21
+    n1: n3
+    n2: n4
+    i1: i3
+    i2: i3
+    conditioning: {}
+    label: DCESP02-Ethernet1/2<->DCELF12-Ethernet1/2
+  - id: l22
+    n1: n14
+    n2: n15
+    i1: i30
+    i2: i30
+    conditioning: {}
+    label: DCEBRLF101-Ethernet1/29<->DCEBRLF102-Ethernet1/29
+  - id: l23
+    n1: n14
+    n2: n15
+    i1: i31
+    i2: i31
+    conditioning: {}
+    label: DCEBRLF101-Ethernet1/30<->DCEBRLF102-Ethernet1/30
+  - id: l24
+    n1: n14
+    n2: n15
+    i1: i32
+    i2: i32
+    conditioning: {}
+    label: DCEBRLF101-Ethernet1/31<->DCEBRLF102-Ethernet1/31
+  - id: l25
+    n1: n9
+    n2: n19
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: DCWLF11-Ethernet1/3<->DCWLTM01-eth1
+  - id: l26
+    n1: n6
+    n2: n18
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: DCWLF12-Ethernet1/3<->DCWLTM02-eth1
+  - id: l27
+    n1: n19
+    n2: n18
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCWLTM01-eth5<->DCWLTM02-eth5
+  - id: l28
+    n1: n18
+    n2: n21
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: DCWLTM02-eth2<->DCWTOR02-GigabitEthernet0/0
+  - id: l29
+    n1: n19
+    n2: n20
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: DCWLTM01-eth2<->DCWTOR01-GigabitEthernet0/0
+  - id: l30
+    n1: n9
+    n2: n21
+    i1: i5
+    i2: i4
+    conditioning: {}
+    label: DCWLF11-Ethernet1/4<->DCWTOR02-GigabitEthernet0/3
+  - id: l31
+    n1: n6
+    n2: n20
+    i1: i5
+    i2: i4
+    conditioning: {}
+    label: DCWLF12-Ethernet1/4<->DCWTOR01-GigabitEthernet0/3
+  - id: l32
+    n1: n20
+    n2: n21
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCWTOR01-GigabitEthernet0/1<->DCWTOR02-GigabitEthernet0/1
+  - id: l33
+    n1: n16
+    n2: n17
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCELTM01-eth5<->DCELTM02-eth5
+  - id: l34
+    n1: n22
+    n2: n23
+    i1: i2
+    i2: i2
+    conditioning: {}
+    label: DCETOR01-GigabitEthernet0/1<->DCETOR02-GigabitEthernet0/1
+  - id: l35
+    n1: n8
+    n2: n23
+    i1: i5
+    i2: i4
+    conditioning: {}
+    label: DCELF11-Ethernet1/4<->DCETOR02-GigabitEthernet0/3
+  - id: l36
+    n1: n4
+    n2: n22
+    i1: i5
+    i2: i4
+    conditioning: {}
+    label: DCELF12-Ethernet1/4<->DCETOR01-GigabitEthernet0/3
+  - id: l37
+    n1: n8
+    n2: n16
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: DCELF11-Ethernet1/3<->DCELTM01-eth1
+  - id: l38
+    n1: n4
+    n2: n17
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: DCELF12-Ethernet1/3<->DCELTM02-eth1
+  - id: l39
+    n1: n8
+    n2: n4
+    i1: i30
+    i2: i30
+    conditioning: {}
+    label: DCELF11-Ethernet1/29<->DCELF12-Ethernet1/29
+  - id: l40
+    n1: n8
+    n2: n4
+    i1: i31
+    i2: i31
+    conditioning: {}
+    label: DCELF11-Ethernet1/30<->DCELF12-Ethernet1/30
+  - id: l41
+    n1: n8
+    n2: n4
+    i1: i32
+    i2: i32
+    conditioning: {}
+    label: DCELF11-Ethernet1/31<->DCELF12-Ethernet1/31
+  - id: l42
+    n1: n16
+    n2: n22
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: DCELTM01-eth2<->DCETOR01-GigabitEthernet0/0
+  - id: l43
+    n1: n17
+    n2: n23
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: DCELTM02-eth2<->DCETOR02-GigabitEthernet0/0
+  - id: l44
+    n1: n24
+    n2: n5
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: DCWFW01-ethernet1/1<->DCWBRLF101-Ethernet1/1
+  - id: l45
+    n1: n7
+    n2: n24
+    i1: i3
+    i2: i2
+    conditioning: {}
+    label: DCWBRLF102-Ethernet1/2<->DCWFW01-ethernet1/2
+  - id: l46
+    n1: n24
+    n2: n12
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: DCWFW01-ethernet1/3<->DCWWR01-GigabitEthernet1
+  - id: l47
+    n1: n24
+    n2: n13
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: DCWFW01-ethernet1/4<->DCWWR02-GigabitEthernet2
+  - id: l48
+    n1: n25
+    n2: n7
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: DCWFW01_0-ethernet1/1<->DCWBRLF102-Ethernet1/1
+  - id: l49
+    n1: n5
+    n2: n25
+    i1: i3
+    i2: i2
+    conditioning: {}
+    label: DCWBRLF101-Ethernet1/2<->DCWFW01_0-ethernet1/2
+  - id: l50
+    n1: n25
+    n2: n13
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: DCWFW01_0-ethernet1/3<->DCWWR02-GigabitEthernet1
+  - id: l51
+    n1: n25
+    n2: n12
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: DCWFW01_0-ethernet1/4<->DCWWR01-GigabitEthernet2
+  - id: l52
+    n1: n24
+    n2: n25
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCWFW01-ethernet1/5<->DCWFW01_0-ethernet1/5
+  - id: l53
+    n1: n24
+    n2: n25
+    i1: i6
+    i2: i6
+    conditioning: {}
+    label: DCWFW01-ethernet1/6<->DCWFW01_0-ethernet1/6
+  - id: l54
+    n1: n24
+    n2: n25
+    i1: i7
+    i2: i7
+    conditioning: {}
+    label: DCWFW01-ethernet1/7<->DCWFW01_0-ethernet1/7
+  - id: l55
+    n1: n24
+    n2: n25
+    i1: i8
+    i2: i8
+    conditioning: {}
+    label: DCWFW01-ethernet1/8<->DCWFW01_0-ethernet1/8
+  - id: l56
+    n1: n14
+    n2: n26
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: DCEBRLF101-Ethernet1/1<->DCEFW01-ethernet1/1
+  - id: l57
+    n1: n26
+    n2: n11
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: DCEFW01-ethernet1/3<->DCEWR01-GigabitEthernet1
+  - id: l58
+    n1: n26
+    n2: n15
+    i1: i2
+    i2: i3
+    conditioning: {}
+    label: DCEFW01-ethernet1/2<->DCEBRLF102-Ethernet1/2
+  - id: l59
+    n1: n27
+    n2: n15
+    i1: i1
+    i2: i2
+    conditioning: {}
+    label: DCEFW02-ethernet1/1<->DCEBRLF102-Ethernet1/1
+  - id: l60
+    n1: n27
+    n2: n14
+    i1: i2
+    i2: i3
+    conditioning: {}
+    label: DCEFW02-ethernet1/2<->DCEBRLF101-Ethernet1/2
+  - id: l61
+    n1: n27
+    n2: n10
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: DCEFW02-ethernet1/3<->DCEWR02-GigabitEthernet1
+  - id: l62
+    n1: n27
+    n2: n11
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: DCEFW02-ethernet1/4<->DCEWR01-GigabitEthernet2
+  - id: l63
+    n1: n26
+    n2: n10
+    i1: i4
+    i2: i2
+    conditioning: {}
+    label: DCEFW01-ethernet1/4<->DCEWR02-GigabitEthernet2
+  - id: l64
+    n1: n26
+    n2: n27
+    i1: i5
+    i2: i5
+    conditioning: {}
+    label: DCEFW01-ethernet1/5<->DCEFW02-ethernet1/5
+  - id: l65
+    n1: n26
+    n2: n27
+    i1: i6
+    i2: i6
+    conditioning: {}
+    label: DCEFW01-ethernet1/6<->DCEFW02-ethernet1/6
+  - id: l66
+    n1: n26
+    n2: n27
+    i1: i7
+    i2: i7
+    conditioning: {}
+    label: DCEFW01-ethernet1/7<->DCEFW02-ethernet1/7
+  - id: l67
+    n1: n26
+    n2: n27
+    i1: i8
+    i2: i8
+    conditioning: {}
+    label: DCEFW01-ethernet1/8<->DCEFW02-ethernet1/8
+lab:
+  description: ''
+  notes: ''
+  title: Lab at Thu 10:34 AM
+  version: 0.2.2
