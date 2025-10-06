@@ -1,0 +1,83 @@
+NX9k-Leaf-4 Overlay Configuration
+
+feature bgp
+feature vn-segment-vlan-based
+feature nv overlay
+nv overlay evpn
+!
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+vlan 500
+  vn-segment 5000
+!
+vlan 1000
+  vn-segment 10000
+!
+interface Vlan500
+  ip forward
+!
+interface Vlan1000
+  ip forward
+!
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 5000
+    ingress-replication protocol bgp
+  member vni 10000
+    ingress-replication protocol bgp
+!
+!
+router bgp 65000
+  router-id 88.88.88.88
+  address-family l2vpn evpn
+!
+  template peer iBGP-EVPN
+    remote-as 65000
+    update-source loopback0
+    address-family ipv4 unicast
+      next-hop-self
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+!
+  neighbor 3.3.3.3
+    inherit peer iBGP-EVPN
+!
+  neighbor 4.4.4.4
+    inherit peer iBGP-EVPN
+!
+evpn
+  vni 5000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 10000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+!
+#DC-Inter-Connect
+!
+router bgp 65000
+  neighbor 11.11.11.11
+    remote-as 64611
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+  neighbor 22.22.22.22
+    remote-as 64622
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn        

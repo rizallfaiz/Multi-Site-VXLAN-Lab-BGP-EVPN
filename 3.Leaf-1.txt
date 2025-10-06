@@ -1,0 +1,189 @@
+NX9K-Leaf-1 Underlay Configuration
+
+hostname NX9K-Leaf-1
+!
+feature bgp
+feature lacp
+feature vpc
+feature interface-vlan
+!
+system jumbomtu 1500
+!
+vlan 1,500,1000
+!
+vlan 500
+  name DC-1-SERVER-TENANT
+!
+vlan 1000
+  name V-MOTION
+!
+vrf context VPC-KEEPALIVE
+!
+vpc domain 10
+  role priority 10
+  peer-keepalive destination 10.0.8.2 source 10.0.8.1 vrf VPC-KEEPALIVE
+  ip arp synchronize
+!
+interface Vlan500
+  description SERVER-TENANT
+  no shutdown
+!
+interface Vlan1000
+  description V-MOTION
+  no shutdown
+!
+interface port-channel10
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  spanning-tree port type network
+  vpc peer-link
+!
+interface Ethernet1/1
+  description CONN-TO-USDCW01SP01
+  no switchport
+  ip address 10.0.0.2/30
+  no shutdown
+!
+interface Ethernet1/2
+  description CONN-TO-USDCW01SP02
+  no switchport
+  ip address 10.0.1.2/30
+  no shutdown
+!
+interface Ethernet1/3
+  description CONN-TO-USDCW01LTM01
+  switchport access vlan 500
+!
+interface Ethernet1/4
+  description V-Motion
+  switchport mode trunk
+  switchport trunk allowed vlan 1000
+!
+interface Ethernet1/29
+  description VPC-PEER-KEEPALIVE
+  no switchport
+  vrf member VPC-KEEPALIVE
+  ip address 10.0.8.1/30
+  no shutdown
+!
+interface Ethernet1/30
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  channel-group 10 mode active
+!
+interface Ethernet1/31
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  channel-group 10 mode active
+!
+interface loopback0
+  ip address 11.11.11.11/32
+  ip address 1.0.0.1/32 secondary
+!
+# The secondary IP address of the Loopback0 must be the same for vPC peer leaf switch.
+!
+router bgp 64611
+  router-id 11.11.11.11
+  address-family ipv4 unicast
+    network 1.0.0.1/32
+    network 11.11.11.11/32
+!
+   neighbor 10.0.0.1
+    remote-as 65501
+    description BGP-Underlay-To-USDCW01SP01
+    address-family ipv4 unicast
+!
+  neighbor 10.0.1.1
+    remote-as 65502
+    description BGP-Underlay-To-USDCW01SP02
+    address-family ipv4 unicast
+!
+
+
+
+NX9K-Leaf-1 Overlay Configuration
+
+nv overlay evpn
+feature interface-vlan
+feature vn-segment-vlan-based
+feature nv overlay
+!
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+vlan 500
+  vn-segment 5000
+!
+vlan 1000
+  vn-segment 10000
+!
+interface Vlan500
+  ip forward
+!
+interface Vlan1000
+  ip forward
+!
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 5000
+    ingress-replication protocol bgp
+  member vni 10000
+    ingress-replication protocol bgp
+!
+router bgp 64611
+ neighbor 1.1.1.1
+    remote-as 65501
+    description BGP-Overlay-To-Spine-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+  neighbor 2.2.2.2
+    remote-as 65502
+    description BGP-Overlay-To-Spine-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+# This is DC Inter-Connect-Configuration. There are so many ways to achieve this.
+!
+router bgp 64611
+  neighbor 77.77.77.77
+    remote-as 65000
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+  neighbor 88.88.88.88
+    remote-as 65000
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+evpn
+  vni 5000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 10000 l2
+    rd auto
+    route-target import auto
+    route-target export auto        

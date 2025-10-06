@@ -1,0 +1,176 @@
+NX9k-Leaf-3 Underlay Configuration
+
+hostname NX9k-Leaf-3
+!
+feature ospf
+feature interface-vlan
+feature lacp
+feature vpc
+!
+system jumbomtu 1500
+!
+vlan 1,500,1000
+!
+vlan 500
+  name DC-1-SERVER-TENANT
+!
+vlan 1000
+  name V-MOTION
+!
+vrf context VPC-KEEPALIVE
+!
+vpc domain 10
+  role priority 10
+  peer-keepalive destination 10.0.23.2 source 10.0.23.1 vrf VPC-KEEPALIVE
+  ip arp synchronize
+!
+interface Vlan500
+  description SERVER-TENANT
+  no shutdown
+!
+interface Vlan1000
+  description V-MOTION
+  no shutdown
+!
+interface port-channel10
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  spanning-tree port type network
+  vpc peer-link
+!
+interface Ethernet1/1
+  description CONNECT-TO-NX9K-Spine-4
+  no switchport
+  ip address 10.0.19.2/30
+  ip ospf network point-to-point
+  ip router ospf 1 area 0.0.0.0
+  no shutdown
+!
+interface Ethernet1/2
+  description CONNECT-TO-NX9K-Spine-3
+  no switchport
+  ip address 10.0.18.2/30
+  ip ospf network point-to-point
+  ip router ospf 1 area 0.0.0.0
+  no shutdown
+!
+interface Ethernet1/3
+  description CONNECT-TO-F5-LTM-3
+  switchport access vlan 500
+!
+interface Ethernet1/4
+  description V-Motion
+  switchport mode trunk
+  switchport trunk allowed vlan 1000
+!
+interface Ethernet1/29
+  no switchport
+  vrf member VPC-KEEPALIVE
+  ip address 10.0.23.1/30
+  no shutdown
+!
+interface Ethernet1/30
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  channel-group 10 mode active
+!
+interface Ethernet1/31
+  switchport mode trunk
+  switchport trunk allowed vlan 1,500,1000
+  channel-group 10 mode active
+!
+interface loopback0
+  ip address 77.77.77.77/32
+  ip address 1.0.0.34/32 secondary
+  ip router ospf 1 area 0.0.0.0
+!
+router ospf 1        
+!
+
+
+
+
+
+NX9k-Leaf-3 Overlay Configuration
+
+feature bgp
+feature vn-segment-vlan-based
+feature nv overlay
+nv overlay evpn
+!
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+vlan 500
+  vn-segment 5000
+!
+vlan 1000
+  vn-segment 10000
+!
+interface Vlan500
+  ip forward
+!
+interface Vlan1000
+  ip forward
+!
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 5000
+    ingress-replication protocol bgp
+  member vni 10000
+    ingress-replication protocol bgp
+!
+!
+router bgp 65000
+  router-id 77.77.77.77
+  address-family l2vpn evpn
+!
+  template peer iBGP-EVPN
+    remote-as 65000
+    update-source loopback0
+    address-family ipv4 unicast
+      next-hop-self
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+!
+  neighbor 3.3.3.3
+    inherit peer iBGP-EVPN
+!
+  neighbor 4.4.4.4
+    inherit peer iBGP-EVPN
+!
+evpn
+  vni 5000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 10000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+!
+#DC-Inter-Connect
+!
+router bgp 65000
+  neighbor 11.11.11.11
+    remote-as 64611
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+  neighbor 22.22.22.22
+    remote-as 64622
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn        

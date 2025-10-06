@@ -1,0 +1,196 @@
+PA-FW-3 and PA-FW-4 Configuration
+
+Since we have already seen how to configure from GUI, we will use CLI here.
+
+#Both PA-FW-3&4
+set deviceconfig system dns-setting servers primary 192.168.1.168 secondary 8.8.8.8
+set deviceconfig system domain ht.local
+set deviceconfig system timezone America/New_York
+set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org
+!
+set network interface ethernet ethernet1/7 ha
+set network interface ethernet ethernet1/7 comment HA-1
+set network interface ethernet ethernet1/8 ha
+set network interface ethernet ethernet1/8 comment HA-1-BACKUP
+set network interface ethernet ethernet1/9 ha
+set network interface ethernet ethernet1/9 comment HA-2
+set network interface ethernet ethernet1/10 ha
+set network interface ethernet ethernet1/10 comment HA-2-BACKUP        
+# FOR PA-FW-3
+set deviceconfig system hostname  PA-FW-3
+set deviceconfig high-availability enabled yes
+set deviceconfig high-availability group mode active-passive
+set deviceconfig high-availability group group-id 10
+set deviceconfig high-availability group description HA-AP-Pair
+set deviceconfig high-availability group peer-ip 10.0.24.2
+set deviceconfig high-availability group peer-ip-backup 10.0.25.2
+set deviceconfig high-availability group election-option device-priority 100
+set deviceconfig high-availability group election-option preemptive
+set deviceconfig high-availability group election-option heartbeat-backup yes
+set deviceconfig high-availability group election-option timers recommended
+set deviceconfig high-availability group configuration-synchronization enabled yes
+set deviceconfig high-availability group state-synchronization enabled yes transport ethernet ha2-keep-alive enabled yes action log-only
+!
+set deviceconfig high-availability interface ha1 port ethernet1/3 ip-address 10.0.24.1 netmask 255.255.255.252
+set deviceconfig high-availability interface ha1-backup port ethernet1/4 ip-address 10.0.25.1 netmask 255.255.255.252
+set deviceconfig high-availability interface ha2 port ethernet1/5 ip-address 10.0.26.1 netmask 255.255.255.252
+set deviceconfig high-availability interface ha2-backup port ethernet1/6 ip-address 10.0.27.1 netmask 255.255.255.252        
+# FOR PA-FW-4
+set deviceconfig system hostname  PA-FW-4
+set deviceconfig high-availability enabled yes
+set deviceconfig high-availability group mode active-passive
+set deviceconfig high-availability group group-id 10
+set deviceconfig high-availability group description HA-AP-Pair
+set deviceconfig high-availability group peer-ip 10.0.24.1
+set deviceconfig high-availability group peer-ip-backup 10.0.25.1
+set deviceconfig high-availability group election-option device-priority 200
+set deviceconfig high-availability group election-option preemptive
+set deviceconfig high-availability group election-option heartbeat-backup yes
+set deviceconfig high-availability group election-option timers recommended
+set deviceconfig high-availability group configuration-synchronization enabled yes
+set deviceconfig high-availability group state-synchronization enabled yes transport ethernet ha2-keep-alive enabled yes action log-only
+!
+set deviceconfig high-availability interface ha1 port ethernet1/3 ip-address 10.0.24.2 netmask 255.255.255.252
+set deviceconfig high-availability interface ha1-backup port ethernet1/4 ip-address 10.0.25.2 netmask 255.255.255.252
+set deviceconfig high-availability interface ha2 port ethernet1/5 ip-address 10.0.26.2 netmask 255.255.255.252
+set deviceconfig high-availability interface ha2-backup port ethernet1/6 ip-address 10.0.27.2 netmask 255.255.255.252        
+# At Primary Active Firewall
+# Configure L2 VLAN
+set network vlan "VLAN 500" virtual-interface interface vlan.500
+set network vlan "VLAN 500" interface [ ethernet1/1.500 ethernet1/2.500 ]
+set network vlan "VLAN 126" virtual-interface interface vlan.126
+set network vlan "VLAN 126" interface [ ethernet1/1.126 ethernet1/2.126 ]
+set network vlan "VLAN 10" virtual-interface interface vlan.10
+set network vlan "VLAN 10" interface [ ethernet1/1.10 ethernet1/2.10 ]
+!
+# Configure L3 VLAN
+set network interface vlan units vlan.126 comment L3-LINK-TO-BORDER-LEAF
+set network interface vlan units vlan.126 ip 30.0.126.1/29
+set network interface vlan units vlan.126 interface-management-profile PING
+set network interface vlan units vlan.500 ip 50.0.0.1/24
+set network interface vlan units vlan.500 interface-management-profile PING
+set network interface vlan units vlan.500 comment SERVER-TENANT
+set network interface vlan units vlan.10 ip 10.0.31.1/29
+set network interface vlan units vlan.10 interface-management-profile PING
+# Configure Security Zones
+set zone INSIDE network layer3 [ vlan.126 vlan.500 vlan.10 ]
+set zone OUTSIDE network layer3 [ ethernet1/3 ethernet1/4 ]
+
+# Configure Interfaces
+set network interface ethernet ethernet1/1 comment CONNECT-TO-N9K-Border-Leaf
+!
+set network interface ethernet ethernet1/1 layer2 units ethernet1/1.126 tag 126
+!
+set network interface ethernet ethernet1/1 layer2 units ethernet1/1.500 tag 500
+!
+set network interface ethernet ethernet1/1 layer2 units ethernet1/1.10 tag 10
+set network interface ethernet ethernet1/1 layer2 units ethernet1/1.10 comment DC-INTERCONNECT
+!
+set network interface ethernet ethernet1/2 comment CONNECT-TO-N9K-Border-Leaf
+!
+set network interface ethernet ethernet1/2 layer2 units ethernet1/2.126 tag 126
+!
+set network interface ethernet ethernet1/2 layer2 units ethernet1/2.500 tag 500
+!
+set network interface ethernet ethernet1/2 layer2 units ethernet1/2.10 tag 10
+set network interface ethernet ethernet1/2 layer2 units ethernet1/2.10 comment DC-INTERCONNECT
+!
+set network interface ethernet ethernet1/3 comment CONNECT-ISP-1&2
+set network interface ethernet ethernet1/3 layer3 ip 172.0.2.2/30
+set network interface ethernet ethernet1/3 layer3 interface-management-profile PING
+!
+set network interface ethernet ethernet1/4 layer3 ip 172.0.3.2/30
+set network interface ethernet ethernet1/4 layer3 interface-management-profile PING
+set network interface ethernet ethernet1/4 layer3 lldp enable no        
+
+
+# Configure Virtual Router VxLAN-LAB
+# BGP
+set network virtual-router VxLAN-LAB protocol bgp routing-options graceful-restart enable yes
+set network virtual-router VxLAN-LAB protocol bgp enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers type ibgp export-nexthop use-self
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 peer-address ip 172.0.2.1
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 subsequent-address-family-identifier unicast yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 local-address ip 172.0.2.2/30
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 local-address interface ethernet1/3
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 peer-as 65000
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 enable-mp-bgp yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-1 reflector-client non-client
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 peer-address ip 172.0.3.1
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 subsequent-address-family-identifier unicast yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 local-address ip 172.0.3.2/30
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 local-address interface ethernet1/4
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 peer-as 65000
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 enable-mp-bgp yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers peer WAN-R-VRF-ISP-2 reflector-client non-client
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers soft-reset-with-stored-info yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group WAN-Routers enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches type ibgp export-nexthop use-self
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 peer-address ip 10.0.31.2
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 subsequent-address-family-identifier unicast yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 local-address ip 10.0.31.1/29
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 local-address interface vlan.10
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 peer-as 65000
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 enable-mp-bgp yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-3 reflector-client client
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 peer-address ip 10.0.31.3
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 subsequent-address-family-identifier unicast yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 local-address ip 10.0.31.1/29
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 local-address interface vlan.10
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 enable yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 peer-as 65000
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 enable-mp-bgp yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches peer Border-Leaf-4 reflector-client client
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches soft-reset-with-stored-info yes
+set network virtual-router VxLAN-LAB protocol bgp peer-group Border-Leaf-Switches enable yes
+set network virtual-router VxLAN-LAB protocol bgp reject-default-route no
+set network virtual-router VxLAN-LAB protocol bgp allow-redist-default-route yes
+set network virtual-router VxLAN-LAB protocol bgp router-id 17.17.17.17
+set network virtual-router VxLAN-LAB protocol bgp local-as 65000
+set network virtual-router VxLAN-LAB protocol bgp install-route yes
+set network virtual-router VxLAN-LAB protocol bgp policy export rules Export-to-iBGP-Neighbor action allow update nexthop 10.0.31.1
+set network virtual-router VxLAN-LAB protocol bgp policy export rules Export-to-iBGP-Neighbor match route-table unicast
+set network virtual-router VxLAN-LAB protocol bgp policy export rules Export-to-iBGP-Neighbor used-by Border-Leaf-Switches
+set network virtual-router VxLAN-LAB protocol bgp policy export rules Export-to-iBGP-Neighbor enable yes
+set network virtual-router VxLAN-LAB protocol bgp policy export rules EXPORT-TO-WAN-Routers action allow update nexthop 172.0.2.2
+set network virtual-router VxLAN-LAB protocol bgp policy export rules EXPORT-TO-WAN-Routers match route-table unicast
+set network virtual-router VxLAN-LAB protocol bgp policy export rules EXPORT-TO-WAN-Routers used-by WAN-Routers
+set network virtual-router VxLAN-LAB protocol bgp policy export rules EXPORT-TO-WAN-Routers enable yes
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Static address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Static enable yes
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Static set-origin igp
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Connected address-family-identifier ipv4
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Connected enable yes
+set network virtual-router VxLAN-LAB protocol bgp redist-rules Red-Connected set-origin igp
+
+# Redistribution Static & Connected
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static filter type static
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static filter destination 30.200.200.0/24
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static filter nexthop 30.0.126.2
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static filter interface vlan.126
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static priority 1
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Static action redist
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Connected filter type connect
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Connected filter interface vlan.500
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Connected priority 1
+set network virtual-router VxLAN-LAB protocol redist-profile Red-Connected action redist
+!
+set network virtual-router VxLAN-LAB interface [ ethernet1/3 ethernet1/4 vlan.10 vlan.126 vlan.500 ]
+!
+# Static Routes
+set network virtual-router VxLAN-LAB routing-table ip static-route VNI-15000 nexthop ip-address 30.0.126.2
+set network virtual-router VxLAN-LAB routing-table ip static-route VNI-15000 interface vlan.126
+!
+set network virtual-router VxLAN-LAB routing-table ip static-route VNI-15000 metric 10
+set network virtual-router VxLAN-LAB routing-table ip static-route VNI-15000 destination 30.200.200.0/24
+set network virtual-router VxLAN-LAB routing-table ip static-route VNI-15000 route-table unicast        
+Always remember to commit after you have configured something on Palo Alto firewalls.
+
+commit

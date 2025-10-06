@@ -1,0 +1,39 @@
+***Server-1 Configuration***
+The configuration here is self-explanatory. I would not get into much detail. I am using Cisco vIOS routers as servers to save resources.
+
+hostname Server-1
+!
+interface GigabitEthernet0/0
+ mtu 1370
+ ip address 192.168.22.10 255.255.255.0
+ no shutdown
+!
+enable secret Secure123
+!
+username admin privilege 15 secret Secure123
+!
+ip route 0.0.0.0 0.0.0.0 192.168.22.1
+!
+line vty 0 4
+ login local
+ transport input telnet        
+
+ 
+***Server-2 Configuration***
+
+hostname Server-2
+!
+interface GigabitEthernet0/0
+ mtu 1370
+ ip address 192.168.22.20 255.255.255.0
+ no shutdown
+!
+enable secret Secure123
+!
+username admin privilege 15 secret Secure123
+!
+ip route 0.0.0.0 0.0.0.0 192.168.22.1
+!
+line vty 0 4
+ login local
+ transport input telnet        

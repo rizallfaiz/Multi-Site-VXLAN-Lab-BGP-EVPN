@@ -1,0 +1,288 @@
+NX9K-Border-Leaf-4 Underlay Configuration
+
+hostname NX9K-Border-Leaf-3
+!
+feature ospf
+feature interface-vlan
+feature lacp
+feature vpc
+!
+system jumbomtu 1500
+!
+vlan 1,10,126,150,500,1000
+!
+vlan 126
+  name LINK-L3-VNI-TO-PA-FW
+!
+vlan 150
+  name DC-1-Developer-Network
+!
+vlan 500
+  name DC-1-SERVER-TENANT
+!
+vlan 1000
+  name V-MOTION
+!
+vrf context VPC-KEEPALIVE
+!
+vpc domain 10
+  role priority 10
+  peer-keepalive destination 10.0.22.2 source 10.0.22.1 vrf VPC-KEEPALIVE
+  ip arp synchronize
+!
+interface Vlan10
+  description DC-INTERCONNECT
+  no shutdown
+  no ip redirects
+  ip address 10.0.31.2/29
+  ip router ospf 1 area 0.0.0.0
+!
+interface Vlan126
+  description LINK-L3-VNI-TO-PA-FW
+  no shutdown
+!
+interface Vlan150
+  description DC-1-Developer-Network
+  no shutdown
+!
+interface Vlan500
+  description SERVER-TENANT
+  no shutdown
+!
+interface port-channel10
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  spanning-tree port type network
+  vpc peer-link
+!
+interface Ethernet1/1
+  description CONNECT-TO-PA-FW
+  switchport mode trunk
+  switchport trunk allowed vlan 10,126,500
+!
+interface Ethernet1/2
+  description CONNECT-TO-PA-FW
+  switchport mode trunk
+  switchport trunk allowed vlan 10,126,500
+!
+interface Ethernet1/3
+  description CONNECT-TO-NX9K-Spine-3
+  no switchport
+  ip address 10.0.14.2/30
+  ip ospf network point-to-point
+  ip router ospf 1 area 0.0.0.0
+  no shutdown
+!
+interface Ethernet1/4
+  description CONNECT-TO-NX9K-Spine-4
+  no switchport
+  ip address 10.0.15.2/30
+  ip ospf network point-to-point
+  ip router ospf 1 area 0.0.0.0
+  no shutdown
+!
+interface Ethernet1/10
+  description CONNECT-TO-DEVELOPER-PC-2
+  switchport access vlan 150
+!
+interface Ethernet1/29
+  no switchport
+  vrf member VPC-KEEPALIVE
+  ip address 10.0.22.1/30
+  no shutdown
+!
+interface Ethernet1/30
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  channel-group 10 mode active
+!
+interface Ethernet1/31
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  channel-group 10 mode active
+!
+interface loopback0
+  ip address 55.55.55.55/32
+  ip address 1.0.0.56/32 secondary
+  ip router ospf 1 area 0.0.0.0
+!
+router ospf 1        
+!
+
+
+
+
+NX9K-Border-Leaf-4 Overlay Configuration
+
+feature vn-segment-vlan-based
+feature nv overlay
+feature bgp
+nv overlay evpn
+!
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+!
+vlan 126
+  vn-segment 12600
+!
+vlan 150
+  vn-segment 15000
+!
+vlan 500
+  vn-segment 5000
+!
+vlan 1000
+  vn-segment 10000
+!
+ip prefix-list DC-1-Developer-Network seq 5 permit 30.200.200.0/24
+ip prefix-list L3-VNI-LINK-TO-PA-FW seq 5 permit 30.0.126.0/29
+ip prefix-list LOOPBACKS seq 5 permit 11.11.11.11/32
+ip prefix-list LOOPBACKS seq 10 permit 22.22.22.22/32
+ip prefix-list LOOPBACKS seq 15 permit 33.33.33.33/32
+ip prefix-list LOOPBACKS seq 20 permit 44.44.44.44/32
+ip prefix-list LOOPBACKS seq 25 permit 1.0.0.1/32
+ip prefix-list LOOPBACKS seq 30 permit 1.0.0.3/32
+ip prefix-list REDISTRIBUTION-OSPF-TO-BGP seq 5 permit 77.77.77.77/32
+ip prefix-list REDISTRIBUTION-OSPF-TO-BGP seq 10 permit 88.88.88.88/32
+ip prefix-list REDISTRIBUTION-OSPF-TO-BGP seq 15 permit 1.0.0.34/32
+!
+route-map DC-1-Developer-Network permit 10
+  match ip address prefix-list DC-1-Developer-Network
+route-map L3-VNI-LINK-TO-PA-FW permit 10
+  match ip address prefix-list L3-VNI-LINK-TO-PA-FW
+route-map REDISTRIBUTE-LOOPBACKS-TO-BGP permit 10
+  match ip address prefix-list REDISTRIBUTION-OSPF-TO-BGP
+route-map REDISTRIBUTE-LOOPBACKS-TO-OSPF permit 10
+  match ip address prefix-list LOOPBACKS
+  match route-type internal
+route-map STATIC permit 10
+  match route-type local
+!
+vrf context DC-1-Developer-Network
+  vni 15000
+  ip route 0.0.0.0/0 30.0.126.1
+  rd 65000:15000
+  address-family ipv4 unicast
+    route-target import 65000:12600
+    route-target import 65000:12600 evpn
+    route-target import 65000:15000
+    route-target import 65000:15000 evpn
+    route-target export 65000:12600
+    route-target export 65000:12600 evpn
+    route-target export 65000:15000
+    route-target export 65000:15000 evpn
+!
+vrf context L3-VNI-LINK-TO-PA-FW
+  vni 12600
+  ip route 0.0.0.0/0 30.0.126.1
+  rd 65000:126000
+  address-family ipv4 unicast
+    route-target import 65000:12600
+    route-target import 65000:12600 evpn
+    route-target import 65000:15000
+    route-target import 65000:15000 evpn
+    route-target export 65000:12600
+    route-target export 65000:12600 evpn
+    route-target export 65000:15000
+    route-target export 65000:15000 evpn
+!
+interface Vlan126
+  vrf member L3-VNI-LINK-TO-PA-FW
+  ip address 30.0.126.2/29
+  fabric forwarding mode anycast-gateway
+!
+interface Vlan150
+  vrf member DC-1-Developer-Network
+  ip address 30.200.200.1/24
+  fabric forwarding mode anycast-gateway
+!
+interface Vlan500
+  ip forward
+!
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 5000
+    ingress-replication protocol bgp
+  member vni 12600 associate-vrf
+  member vni 15000 associate-vrf
+!
+router ospf 1
+  redistribute bgp 65000 route-map REDISTRIBUTE-LOOPBACKS-TO-OSPF
+!
+router bgp 65000
+  router-id 66.66.66.66
+  address-family ipv4 unicast
+    network 1.0.0.56/32
+    network 66.66.66.66/32
+    redistribute ospf 1 route-map REDISTRIBUTE-LOOPBACKS-TO-BGP
+!
+  template peer iBGP-EVPN
+    remote-as 65000
+    update-source loopback0
+    address-family l2vpn evpn
+      send-community
+      send-community extended
+!
+  neighbor 3.3.3.3
+    inherit peer iBGP-EVPN
+!
+  neighbor 4.4.4.4
+    inherit peer iBGP-EVPN
+!
+  neighbor 10.0.31.1
+    remote-as 65000
+    address-family ipv4 unicast
+      next-hop-self
+!
+  vrf DC-1-Developer-Network
+    address-family ipv4 unicast
+      advertise l2vpn evpn
+      redistribute direct route-map DC-1-Developer-Network
+      redistribute static route-map STATIC
+!
+  vrf L3-VNI-LINK-TO-PA-FW
+    address-family ipv4 unicast
+      advertise l2vpn evpn
+      redistribute direct route-map L3-VNI-LINK-TO-PA-FW
+      redistribute static route-map STATIC
+!
+evpn
+  vni 5000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 12600 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 15000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+!
+# DC-Inter-Connect
+!
+router bgp 65000
+  neighbor 33.33.33.33
+    remote-as 64633
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+  neighbor 44.44.44.44
+    remote-as 64644
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn        

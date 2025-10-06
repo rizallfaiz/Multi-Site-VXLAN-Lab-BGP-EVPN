@@ -1,0 +1,63 @@
+WR02 Configuration
+
+The configuration here is self-explanatory. I would not get into much detail.
+
+hostname WR02
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition ISP-1
+ rd 64613:1
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition ISP-2
+ rd 64613:2
+ !
+ address-family ipv4
+ exit-address-family
+!
+interface GigabitEthernet1
+ description CONNECT-TO-PA-FW-E1/3
+ vrf forwarding ISP-1
+ ip address 172.0.0.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet2
+ description CONNECT-TO-PA-FW-E1/4
+ vrf forwarding ISP-2
+ ip address 172.0.1.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet3
+ vrf forwarding ISP-2
+ ip address 121.2.33.2 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet4
+ vrf forwarding ISP-1
+ ip address 121.2.44.2 255.255.255.252
+ negotiation auto
+!
+router bgp 64513
+ bgp router-id 13.13.13.13
+ bgp log-neighbor-changes
+ !
+ address-family ipv4 vrf ISP-1
+  neighbor 121.2.44.1 remote-as 1000
+  neighbor 121.2.44.1 activate
+  neighbor 172.0.0.2 remote-as 64512
+  neighbor 172.0.0.2 activate
+  neighbor 172.0.0.2 default-originate
+ exit-address-family
+ !
+ address-family ipv4 vrf ISP-2
+  neighbor 121.2.33.1 remote-as 2000
+  neighbor 121.2.33.1 activate
+  neighbor 172.0.1.2 remote-as 64512
+  neighbor 172.0.1.2 activate
+  neighbor 172.0.1.2 default-originate
+ exit-address-family        

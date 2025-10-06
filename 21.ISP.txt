@@ -1,0 +1,78 @@
+2.3. ISP-1 & ISP-2 Configuration
+
+hostname ISP-1
+!
+interface GigabitEthernet3
+ description CONNECT-TO-WAN-R-1-Gi-3
+ ip address 121.1.33.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet4
+ ip address 121.2.44.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet5
+ ip address 121.13.55.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet6
+ ip address 121.14.66.1 255.255.255.252
+ negotiation auto
+!
+router bgp 1000
+ bgp router-id 101.101.101.101
+ bgp log-neighbor-changes
+ neighbor 121.1.33.2 remote-as 64513
+ neighbor 121.2.44.2 remote-as 64513
+ neighbor 121.13.55.2 remote-as 65000
+ neighbor 121.14.66.2 remote-as 65000
+ !
+ address-family ipv4
+  neighbor 121.1.33.2 activate
+  neighbor 121.1.33.2 default-originate
+  neighbor 121.2.44.2 activate
+  neighbor 121.2.44.2 default-originate
+  neighbor 121.13.55.2 activate
+  neighbor 121.13.55.2 default-originate
+  neighbor 121.14.66.2 activate
+  neighbor 121.14.66.2 default-originate
+ exit-address-family        
+
+ 
+ 
+ hostname ISP-2
+!
+interface GigabitEthernet3
+ ip address 121.2.33.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet4
+ ip address 121.1.44.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet5
+ ip address 121.24.55.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet6
+ ip address 121.23.66.1 255.255.255.252
+ negotiation auto
+!
+router bgp 2000
+ bgp router-id 202.202.202.202
+ bgp log-neighbor-changes
+ neighbor 121.1.44.2 remote-as 64513
+ neighbor 121.2.33.2 remote-as 64513
+ neighbor 121.23.66.2 remote-as 65000
+ neighbor 121.24.55.2 remote-as 65000
+ !
+ address-family ipv4
+  neighbor 121.1.44.2 activate
+  neighbor 121.1.44.2 default-originate
+  neighbor 121.2.33.2 activate
+  neighbor 121.2.33.2 default-originate
+  neighbor 121.23.66.2 activate
+  neighbor 121.23.66.2 default-originate
+  neighbor 121.24.55.2 activate
+  neighbor 121.24.55.2 default-originate
+ exit-address-family        

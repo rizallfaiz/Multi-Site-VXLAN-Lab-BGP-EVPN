@@ -1,0 +1,36 @@
+Server-3 Configuration
+
+hostname Server-3
+!
+interface GigabitEthernet0/0
+ mtu 1370
+ ip address 192.168.22.30 255.255.255.0
+ no shutdown
+!
+enable secret Secure123
+!
+username admin privilege 15 secret Secure123
+!
+ip route 0.0.0.0 0.0.0.0 192.168.22.254
+!
+line vty 0 4
+ login local
+ transport input telnet        
+Server-4 Configuration
+
+hostname Server-4
+!
+interface GigabitEthernet0/0
+ mtu 1370
+ ip address 192.168.22.40 255.255.255.0
+ no shutdown
+!
+enable secret Secure123
+!
+username admin privilege 15 secret Secure123
+!
+ip route 0.0.0.0 0.0.0.0 192.168.22.254
+!
+line vty 0 4
+ login local
+ transport input telnet        

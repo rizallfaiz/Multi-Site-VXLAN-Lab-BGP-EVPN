@@ -1,0 +1,48 @@
+ToR-SW-1 Configuration
+
+hostname ToR-SW-1
+!
+vlan 1000
+ name VMotion-LAN
+!
+interface GigabitEthernet0/0
+ switchport access vlan 1000
+ switchport mode access
+!
+interface GigabitEthernet0/1
+shutdown
+!
+interface GigabitEthernet0/2
+ switchport access vlan 1000
+ switchport mode access
+!
+interface GigabitEthernet0/3
+ switchport trunk allowed vlan 1000
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto 
+
+ 
+ToR-SW-2 Configuration
+
+hostname ToR-SW-2
+!
+vlan 1000
+ name VMotion-LAN
+!
+interface GigabitEthernet0/0
+ switchport access vlan 1000
+ switchport mode access
+!
+interface GigabitEthernet0/1
+shutdown
+!
+interface GigabitEthernet0/2
+ switchport access vlan 1000
+ switchport mode access
+!
+interface GigabitEthernet0/3
+ switchport trunk allowed vlan 1000
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ negotiation auto        

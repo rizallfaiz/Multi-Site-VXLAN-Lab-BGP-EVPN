@@ -1,0 +1,57 @@
+WAN-R-4 Configuration
+
+hostname WAN-R-4
+!
+vrf definition ISP-1
+ rd 65000:1
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition ISP-2
+ rd 65000:2
+ !
+ address-family ipv4
+ exit-address-family
+!
+interface GigabitEthernet1
+ vrf forwarding ISP-1
+ ip address 172.0.2.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet2
+ vrf forwarding ISP-2
+ ip address 172.0.3.1 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet5
+ vrf forwarding ISP-2
+ ip address 121.24.55.2 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet6
+ vrf forwarding ISP-1
+ ip address 121.14.66.2 255.255.255.252
+ negotiation auto
+!
+router bgp 65000
+ bgp router-id 16.16.16.16
+ bgp log-neighbor-changes
+ !
+ address-family ipv4 vrf ISP-1
+  neighbor 121.14.66.1 remote-as 1000
+  neighbor 121.14.66.1 activate
+  neighbor 172.0.2.2 remote-as 65000
+  neighbor 172.0.2.2 activate
+  neighbor 172.0.2.2 next-hop-self
+  neighbor 172.0.2.2 default-originate
+ exit-address-family
+ !
+ address-family ipv4 vrf ISP-2
+  neighbor 121.24.55.1 remote-as 2000
+  neighbor 121.24.55.1 activate
+  neighbor 172.0.3.2 remote-as 65000
+  neighbor 172.0.3.2 activate
+  neighbor 172.0.3.2 next-hop-self
+  neighbor 172.0.3.2 default-originate
+ exit-address-family        

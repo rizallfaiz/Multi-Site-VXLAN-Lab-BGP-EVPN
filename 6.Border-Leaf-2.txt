@@ -1,0 +1,275 @@
+NX9K-Border-Leaf-2 Underlay Configuration
+
+hostname NX9K-Border-Leaf-2
+!
+feature lacp
+feature vpc
+feature interface-vlan
+feature bgp
+feature vn-segment-vlan-based
+feature fabric forwarding
+!
+system jumbomtu 1500
+!
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+vlan 1,10,126,150,500
+!
+vlan 10
+  name DC-INTERCONNECT
+!
+vlan 126
+  name LINK-L3-VNI-TO-PA-FW
+!
+  vn-segment 12600
+vlan 150
+  name DC-1-Developer-Network
+!
+vlan 500
+  name DC-1-SERVER-TENANT
+!
+vrf context VPC-KEEPALIVE
+!
+vpc domain 10
+  role priority 10
+  peer-keepalive destination 10.0.8.1 source 10.0.8.2 vrf VPC-KEEPALIVE
+  ip arp synchronize
+!
+interface Vlan10
+  description DC-INTERCONNECT
+  no shutdown
+  ip address 10.0.30.4/29
+!
+interface Vlan126
+  description LINK-L3-VNI-TO-PA-FW
+  no shutdown
+!
+interface Vlan150
+  no shutdown
+!
+interface Vlan500
+  description SERVER-TENANT
+  no shutdown
+  ip forward
+!
+interface port-channel10
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  spanning-tree port type network
+  vpc peer-link
+!
+interface Ethernet1/1
+  description CONN-TO-USDCW01FALCON02
+  switchport mode trunk
+!
+interface Ethernet1/2
+  description CONN-TO-USDCW01FALCON01
+  switchport mode trunk
+!
+interface Ethernet1/3
+  description CONN-TO-USDCW01SP02
+  no switchport
+  ip address 10.0.7.2/30
+  no shutdown
+!
+interface Ethernet1/4
+  description CONN-TO-USDCW01SP01
+  no switchport
+  ip address 10.0.6.2/30
+  no shutdown
+!
+interface Ethernet1/29
+  description VPC-PEER-KEEPALIVE
+  no switchport
+  vrf member VPC-KEEPALIVE
+  ip address 10.0.8.2/30
+  no shutdown
+!
+interface Ethernet1/30
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  channel-group 10 mode active
+!
+interface Ethernet1/31
+  switchport mode trunk
+  switchport trunk allowed vlan 1,10,126,150,500
+  channel-group 10 mode active
+!
+interface loopback0
+  ip address 44.44.44.44/32
+  ip address 1.0.0.3/32 secondary
+!
+# The secondary IP address of the Loopback0 must be the same for vPC peer leaf switch.
+!
+router bgp 64644
+  router-id 44.44.44.44
+  address-family ipv4 unicast
+    network 1.0.0.3/32
+    network 44.44.44.44/32
+ !
+  neighbor 10.0.6.1
+    remote-as 65501
+    description BGP-Underlay-To-USDCW01SP01
+    address-family ipv4 unicast
+  neighbor 10.0.7.1
+    remote-as 65502
+    description BGP-Underlay-To-USDCW01SP02
+    address-family ipv4 unicast
+  neighbor 10.0.30.1
+    remote-as 64512
+    description PEERING-TO-PA-FW
+    address-family ipv4 unicast
+!
+
+
+
+NX9K-Border-Leaf-2 Overlay Configuration
+
+nv overlay evpn
+feature interface-vlan
+feature vn-segment-vlan-based
+feature nv overlay
+!
+vlan 126
+  vn-segment 12600
+!
+vlan 150
+  vn-segment 15000
+!
+vlan 500
+  vn-segment 5000
+!
+ip prefix-list DC-1-Developer-Network seq 5 permit 30.100.100.0/24
+ip prefix-list L3-VNI-LINK-TO-PA-FW seq 5 permit 30.126.126.0/29
+!
+route-map DC-1-Developer-Network permit 10
+  match ip address prefix-list DC-1-Developer-Network
+!
+route-map L3-VNI-LINK-TO-PA-FW permit 10
+  match ip address prefix-list L3-VNI-LINK-TO-PA-FW
+!
+route-map STATIC permit 10
+  match route-type local
+!
+vrf context DC-1-Developer-Network
+  vni 15000
+  ip route 0.0.0.0/0 30.126.126.1
+  rd 64644:15000
+  address-family ipv4 unicast
+    route-target import 64644:12600
+    route-target import 64644:12600 evpn
+    route-target import 64644:15000
+    route-target import 64644:15000 evpn
+    route-target export 64644:12600
+    route-target export 64644:12600 evpn
+    route-target export 64644:15000
+    route-target export 64644:15000 evpn
+vrf context L3-VNI-LINK-TO-PA-FW
+  vni 12600
+  ip route 0.0.0.0/0 30.126.126.1
+  rd 64644:12600
+  address-family ipv4 unicast
+    route-target import 64644:12600
+    route-target import 64644:12600 evpn
+    route-target import 64644:15000
+    route-target import 64644:15000 evpn
+    route-target export 64644:12600
+    route-target export 64644:12600 evpn
+    route-target export 64644:15000
+    route-target export 64644:15000 evpn
+
+!
+interface Vlan126
+  vrf member L3-VNI-LINK-TO-PA-FW
+  ip address 30.126.126.2/29
+  fabric forwarding mode anycast-gateway
+!
+interface Vlan150
+  vrf member DC-1-Developer-Network
+  ip address 30.100.100.1/24
+  fabric forwarding mode anycast-gateway
+!
+interface Vlan500
+  ip forward
+!
+interface nve1
+  no shutdown
+  host-reachability protocol bgp
+  source-interface loopback0
+  member vni 5000
+    ingress-replication protocol bgp
+  member vni 12600 associate-vrf
+  member vni 15000 associate-vrf
+!
+router bgp 64633
+   neighbor 1.1.1.1
+    remote-as 65501
+    description BGP-Overlay-To-Spine-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+  neighbor 2.2.2.2
+    remote-as 65502
+    description BGP-Overlay-To-Spine-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+  vrf DC-1-Developer-Network
+    address-family ipv4 unicast
+      advertise l2vpn evpn
+      redistribute direct route-map DC-1-Developer-Network
+      redistribute static route-map STATIC
+  vrf L3-VNI-LINK-TO-PA-FW
+    address-family ipv4 unicast
+      advertise l2vpn evpn
+      redistribute direct route-map L3-VNI-LINK-TO-PA-FW
+      redistribute static route-map STATIC
+!
+# This is DC Inter-Connect-Configuration. There are so many ways to achieve this.
+!
+router bgp 64633
+  neighbor 55.55.55.55
+    remote-as 65000
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+  neighbor 66.66.66.66
+    remote-as 65000
+    description DC-VxLAN-Inter-Connect
+    update-source loopback0
+    ebgp-multihop 20
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      rewrite-evpn-rt-asn
+!
+evpn
+  vni 5000 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 12600 l2
+    rd auto
+    route-target import auto
+    route-target export auto
+  vni 15000 l2
+    rd auto
+    route-target import auto
+    route-target export auto        

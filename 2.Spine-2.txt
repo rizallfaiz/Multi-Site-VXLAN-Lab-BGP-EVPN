@@ -1,0 +1,124 @@
+hostname usdcw01sp02
+!
+feature bgp
+!
+system jumbomtu 1500
+!
+interface Ethernet1/1
+  no switchport
+  description CONNECT-TO-NX9K-Leaf-2
+  ip address 10.0.3.1/30
+  no shutdown
+!
+interface Ethernet1/2
+  no switchport
+  description CONNECT-TO-NX9K-Leaf-1
+  ip address 10.0.1.1/30
+  no shutdown
+!
+interface Ethernet1/3
+  no switchport
+  description CONNECT-TO-Border-Leaf-2
+  ip address 10.0.7.1/30
+  no shutdown
+!
+interface Ethernet1/4
+  no switchport
+  description CONNECT-TO-NX9K-Border-Leaf-1
+  ip address 10.0.5.1/30
+  no shutdown
+!
+interface loopback0
+  ip address 2.2.2.2/32
+!
+router bgp 65502
+  router-id 2.2.2.2
+  address-family ipv4 unicast
+    network 2.2.2.2/32
+!
+  neighbor 10.0.1.2
+    remote-as 64611
+    description BGP-Underlay-To-NX9K-Leaf-1
+    address-family ipv4 unicast
+!
+  neighbor 10.0.3.2
+    remote-as 64622
+    description BGP-Underlay-To-NX9K-Leaf-2
+    address-family ipv4 unicast
+!
+  neighbor 10.0.5.2
+    remote-as 64633
+    description BGP-Underlay-To-NX9K-Border-Leaf-1
+    address-family ipv4 unicast
+!
+  neighbor 10.0.7.2
+    remote-as 64644
+    description BGP-Underlay-To-NX9K-Border-Leaf-2
+    address-family ipv4 unicast
+!
+
+
+
+
+NX9K-Spine-2 Overlay Configuration
+
+feature nv overlay
+feature vn-segment-vlan-based
+nv overlay evpn
+fabric forwarding anycast-gateway-mac 000a.000b.000c
+!
+route-map NEXTHOP-PERMIT permit 10
+  set ip next-hop unchanged
+!
+router bgp 65502
+  address-family l2vpn evpn
+    nexthop route-map NEXTHOP-PERMIT
+    retain route-target all
+!
+  neighbor 11.11.11.11
+    remote-as 64611
+    description BGP-Overlay-To-NX9k-Leaf-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      route-map NEXTHOP-PERMIT out
+      rewrite-evpn-rt-asn
+!
+  neighbor 22.22.22.22
+    remote-as 64622
+    description BGP-Overlay-To-NX9k-Leaf-2
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      route-map NEXTHOP-PERMIT out
+      rewrite-evpn-rt-asn
+!
+  neighbor 33.33.33.33
+    remote-as 64633
+    description BGP-Overlay-To-NX9k-Border-Leaf-1
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      route-map NEXTHOP-PERMIT out
+      rewrite-evpn-rt-asn
+!
+  neighbor 44.44.44.44
+    remote-as 64644
+    description BGP-Overlay-To-NX9k-Border-Leaf-2
+    update-source loopback0
+    ebgp-multihop 2
+    address-family l2vpn evpn
+      disable-peer-as-check
+      send-community
+      send-community extended
+      route-map NEXTHOP-PERMIT out
+      rewrite-evpn-rt-asn        
